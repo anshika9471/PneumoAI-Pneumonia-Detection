@@ -174,11 +174,7 @@ The application will open in your browser at:
 
 This project focuses on integrating the trained classification model into an interactive Streamlit dashboard and developing user-facing features.
 
-## 🙏 Acknowledgement and Original Source
 
-The initial model implementation, training workflow, and technical foundation were adapted from:
-
-**Original Repository:** [ENGABHAY/pneumonia-detection-cnn](https://github.com/ENGABHAY/pneumonia-detection-cnn)
 
 The original project's applicable license and attribution requirements are retained. The dashboard integration and interface enhancements are part of this project's development.
 
