@@ -1,141 +1,189 @@
-# 🫁 Pneumonia Detection from Chest X-Rays
+# 🫁 PneumoAI – Pneumonia X-Ray Classification
 
-A CNN classifier that labels a chest X-ray as **NORMAL** or **PNEUMONIA**, built with MobileNetV2 transfer learning (TensorFlow / Keras) and wrapped in a Streamlit app where you can upload an image and get a prediction.
+**PneumoAI** is a Deep Learning-based educational project that classifies chest X-ray images into two categories: **NORMAL** and **PNEUMONIA**.
 
-> **Educational project, not a medical device.** Do not use it for diagnosis.
+The project uses a CNN-based MobileNetV2 transfer learning model built with TensorFlow/Keras and an interactive web application developed using Streamlit.
 
-## Demo
+## 🚀 Project Overview
 
-**Upload page**
+The objective of this project is to demonstrate how Deep Learning can be integrated with a web application for chest X-ray image classification.
 
-![Home page](screenshots/01_home.png)
+Users can upload a chest X-ray image and view the predicted class, confidence score, probability scores, and prediction history through an interactive dashboard.
 
-**Prediction result**
+## ✨ Key Features
 
-![Prediction result](screenshots/02_prediction.png)
+- Upload chest X-ray images.
+- Classify images into NORMAL and PNEUMONIA categories.
+- MobileNetV2 transfer learning model.
+- Interactive Streamlit dashboard.
+- Uploaded image preview.
+- Prediction confidence and probability scores.
+- Prediction history.
+- Clear uploaded image functionality.
+- Clear prediction history functionality.
 
-## Highlights
+## 🖥️ Application Screenshots
 
-- MobileNetV2 (ImageNet weights) adapted to **single-channel grayscale** input by summing the first conv kernel over its RGB channels. The transfer is verified with a numerical check (relative error 7.07 × 10⁻⁶).
-- Class weights to handle the 2.89 : 1 imbalance between PNEUMONIA and NORMAL in the training set.
-- Mild augmentation (rotation, zoom, shift) with **no horizontal flip**, since a flipped chest X-ray is not realistic.
-- Fast `tf.data` pipeline with shuffling, parallel decoding and prefetching.
-- Full evaluation: classification report, confusion matrix, sensitivity / specificity and ROC curve.
-- Streamlit app for single-image inference.
+### 1. Dashboard
 
-## Dataset
+![PneumoAI Dashboard](screenshots/dashboard.png)
 
-5,856 chest X-ray images, two classes, split into `train`, `val` and `test` folders. The dataset is not included in this repository.
+### 2. NORMAL Prediction
 
-| Split | NORMAL | PNEUMONIA | Total |
-|---|---|---|---|
-| train | 1341 | 3875 | 5216 |
-| val | 8 | 8 | 16 |
-| test | 234 | 390 | 624 |
+![NORMAL Prediction](screenshots/normal.png)
 
-No corrupted images were found. Image sizes vary a lot, so all images are resized to 224 × 224.
+### 3. PNEUMONIA Prediction
 
-## Model
+![PNEUMONIA Prediction](screenshots/pneumonia.png)
 
-| Part | Details |
+### 4. Prediction History
+
+![Prediction History](screenshots/result%26history.png)
+
+## 🧠 Model Architecture
+
+The project uses **MobileNetV2 Transfer Learning** with TensorFlow/Keras.
+
+| Component | Details |
 |---|---|
-| Input | 224 × 224 × 1 (grayscale, raw 0–255) |
-| Preprocessing | Augmentation (train only) → `Rescaling` to [-1, 1] |
-| Backbone | MobileNetV2, ImageNet weights, frozen |
-| Head | `GlobalAveragePooling2D` → `Dense(256, relu)` → `Dropout(0.3)` → `Dense(1, sigmoid)` |
-| Parameters | 2,585,601 total, 328,193 trainable |
-| Loss / optimizer | Binary cross-entropy, Adam (lr = 0.001) |
-| Class weights | NORMAL 1.945, PNEUMONIA 0.673 |
-| Training | Batch size 32, early stopping on `val_loss` (patience 10). Stopped after 15 epochs, best epoch 5 |
-| Saved model | `pneumonia_mobilenetv2.keras` (12.94 MB) |
+| Model | MobileNetV2 |
+| Technique | Transfer Learning |
+| Input Image Size | 224 × 224 |
+| Image Format | Grayscale |
+| Output Classes | NORMAL, PNEUMONIA |
+| Framework | TensorFlow / Keras |
+| Classification | Binary Classification |
 
-## Results
+### Model Performance
 
-Test set (624 images):
+Reported results from the original project's evaluation:
 
-| Metric | Value |
-|---|---|
-| Accuracy | 0.9054 |
+| Metric | Result |
+|---|---:|
+| Accuracy | 90.54% |
 | ROC-AUC | 0.962 |
-| Sensitivity (PNEUMONIA recall) | 0.9667 |
-| Specificity (NORMAL recall) | 0.8034 |
-| PNEUMONIA precision / F1 | 0.89 / 0.93 |
-| NORMAL precision / F1 | 0.94 / 0.86 |
+| Sensitivity | 96.67% |
+| Specificity | 80.34% |
 
-Confusion matrix:
+**Evaluation limitation:** The test set was also used as validation data during training and early stopping. Therefore, these results may be optimistic and should not be interpreted as independent clinical performance.
 
-| | Predicted NORMAL | Predicted PNEUMONIA |
-|---|---|---|
-| **True NORMAL** | 188 | 46 |
-| **True PNEUMONIA** | 13 | 377 |
+## 🛠️ Technologies Used
 
-The model finds almost all pneumonia cases (377 of 390) but flags 46 of 234 healthy X-rays as pneumonia.
+- Python
+- TensorFlow
+- Keras
+- MobileNetV2
+- Streamlit
+- NumPy
+- Pandas
+- Matplotlib
+- Seaborn
+- Scikit-learn
+- Pillow
 
-> **Important:** the validation folder has only 16 images, so the **test set was used as `validation_data`** during training. It influenced early stopping and the choice of the best epoch, which means these scores are optimistic and not a fully independent test result.
+## 📂 Project Structure
 
-## Project Structure
-
-```
-pneumonia-detection/
-├── app.py                        # Streamlit app
-├── Pneumonia-detction.ipynb      # training and evaluation notebook
+```text
+PneumoAI-Pneumonia-Detection/
+│
+├── app.py
 ├── requirements.txt
-├── pneumonia_mobilenetv2.keras   # trained model (not in the repo by default)
-├── screenshots/
-│   ├── 01_home.png
-│   └── 02_prediction.png
-└── README.md
+├── README.md
+├── LICENSE
+│
+├── models/
+│   └── pneumonia_mobilenetv2.keras
+│
+├── notebooks/
+│
+└── screenshots/
+    ├── dashboard.png
+    ├── normal.png
+    ├── pneumonia.png
+    └── result&histoory.png
 ```
 
-## Getting Started
+## ⚙️ Installation and Setup
 
-**1. Install dependencies** (Python 3.9–3.13)
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/anshika9471/PneumoAI-Pneumonia-Detection.git
+```
+
+### 2. Open the project folder
+
+```bash
+cd PneumoAI-Pneumonia-Detection
+```
+
+### 3. Create a virtual environment
 
 ```bash
 python -m venv venv
-venv\Scripts\activate          # Windows
-# source venv/bin/activate     # Mac / Linux
+```
 
+### 4. Activate the environment
+
+For Windows:
+
+```bash
+venv\Scripts\activate
+```
+
+### 5. Install dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-**2. Get the model**
-
-Run the notebook to train and save `pneumonia_mobilenetv2.keras`, then put the file next to `app.py`.
-
-**3. Run the app**
+### 6. Run the Streamlit application
 
 ```bash
 streamlit run app.py
 ```
 
-Open http://localhost:8501, upload a JPG, PNG or BMP chest X-ray and read the prediction.
+The application will open in your browser at:
 
-**Notebook**
+`http://localhost:8501`
 
-The notebook was developed on Google Colab with a GPU and loads the dataset from a zip on Google Drive. Change `zip_path` in the data loading cell, or set `USE_ZIP = False` and point `extract_path` to an already extracted folder.
+## ⚠️ Limitations
 
-## Limitations
+- The model is trained on a specific chest X-ray dataset.
+- The reported evaluation metrics have validation limitations.
+- The application may generate predictions for images that are not chest X-rays.
+- Performance on external datasets has not been established.
+- The model is not clinically validated.
 
-- The test set was also used for validation (see above), so the reported metrics are optimistic.
-- Specificity is 80.3%, so false alarms are common.
-- Results come from a single training run and a single dataset, with no external validation.
-- Some X-rays contain markers, tubes or leads. It is not verified whether the model relies on them.
-- The app accepts any image and will always return a prediction, even for pictures that are not chest X-rays.
+## 🔮 Future Improvements
 
-## Future Work
+- Add Grad-CAM visualizations.
+- Improve model evaluation using an independent validation set.
+- Fine-tune the MobileNetV2 architecture.
+- Improve image validation.
+- Deploy the application online.
+- Explore additional deep learning architectures.
 
-- Re-split the data (`RESPLIT_VAL = True` in the notebook) and keep the test set untouched for one final evaluation.
-- Choose the decision threshold on a validation set instead of fixing it at 0.5.
-- Fine-tune the top layers of MobileNetV2 with a low learning rate.
-- Add Grad-CAM heatmaps to check what the model looks at.
-- Repeat training with several seeds and test on an external dataset.
+## 👩‍💻 Project Contribution
 
-## Tech Stack
+**Project:** PneumoAI – Pneumonia X-Ray Classification
 
-Python · TensorFlow / Keras · scikit-learn · NumPy · pandas · Matplotlib · Seaborn · Streamlit
+**Group ID:** BT_DL_05
 
-## Author
+**Dashboard Development & Integration:** Anshika Agarwal
 
-**Abhay**
-GitHub: [ENGABHAY](https://github.com/ENGABHAY) · LinkedIn: [kadamabhay](https://linkedin.com/in/kadamabhay)
+This project focuses on integrating the trained classification model into an interactive Streamlit dashboard and developing user-facing features.
+
+## 🙏 Acknowledgement and Original Source
+
+The initial model implementation, training workflow, and technical foundation were adapted from:
+
+**Original Repository:** [ENGABHAY/pneumonia-detection-cnn](https://github.com/ENGABHAY/pneumonia-detection-cnn)
+
+The original project's applicable license and attribution requirements are retained. The dashboard integration and interface enhancements are part of this project's development.
+
+## ⚕️ Disclaimer
+
+This project is developed strictly for educational and academic demonstration purposes.
+
+It is not a medical device and must not be used for medical diagnosis, treatment decisions, or clinical purposes.
